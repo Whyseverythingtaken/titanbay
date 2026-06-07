@@ -32,7 +32,7 @@ export const createInvestmentSchema = {
     required: ['fund_id'],
     properties: { fund_id: { type: 'string', format: 'uuid' } }
   },
-  response: { 404: notFoundResponse, 201: investmentResponseShape },
+  response: { 404: notFoundResponse, 422: notFoundResponse, 201: investmentResponseShape },
   body: {
     type: 'object',
     required: ['investor_id', 'amount_usd', 'investment_date'],

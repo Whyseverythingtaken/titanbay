@@ -16,7 +16,17 @@ export default async function investmentRoutes(app: FastifyInstance) {
     const body = req.body as { investor_id: string; amount_usd: number; investment_date: string }
 
     const fund = await prisma.fund.findUnique({ where: { id: fund_id } })
-    if (!fund) return reply.code(404).send({ message: 'Fund not found' })
+    
+    if (!fund) {
+      return reply.code(404).send({ message: 'Fund not found' })
+    }
+    
+    if (fund.status !== 'Fundraising') {
+      return reply.code(422).send({
+        message: 'Investments can only be made into funds that are Fundraising',
+      })
+    }
+    
 
     const investment = await prisma.investment.create({
       data: {

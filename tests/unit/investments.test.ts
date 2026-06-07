@@ -38,7 +38,7 @@ describe('GET /funds/:fund_id/investments', () => {
 
 describe('POST /funds/:fund_id/investments', () => {
   it('returns 201 with the created investment', async () => {
-    mockPrisma.fund.findUnique.mockResolvedValue({ id: FUND_ID })
+    mockPrisma.fund.findUnique.mockResolvedValue({ id: FUND_ID, status: 'Fundraising' })
     const created = { id: 'inv-uuid', fund_id: FUND_ID, investor_id: INVESTOR_ID, amount_usd: 1_000_000, investment_date: '2024-01-15' }
     mockPrisma.investment.create.mockResolvedValue(created)
 
@@ -94,8 +94,31 @@ describe('POST /funds/:fund_id/investments', () => {
     expect(res.statusCode).toBe(400)
   })
 
+  it('returns 422 when fund is Investing', async () => {
+    mockPrisma.fund.findUnique.mockResolvedValue({ id: FUND_ID, status: 'Investing' })
+
+    const res = await app.inject({
+      method: 'POST',
+      url: `/funds/${FUND_ID}/investments`,
+      payload: { investor_id: INVESTOR_ID, amount_usd: 1_000_000, investment_date: '2024-01-15' }
+    })
+
+    expect(res.statusCode).toBe(422)
+  })
+  it('returns 422 when fund is Closed', async () => {
+    mockPrisma.fund.findUnique.mockResolvedValue({ id: FUND_ID, status: 'Closed' })
+
+    const res = await app.inject({
+      method: 'POST',
+      url: `/funds/${FUND_ID}/investments`,
+      payload: { investor_id: INVESTOR_ID, amount_usd: 1_000_000, investment_date: '2024-01-15' }
+    })
+
+    expect(res.statusCode).toBe(422)
+  })
+
   it('returns 400 when investor does not exist (FK violation)', async () => {
-    mockPrisma.fund.findUnique.mockResolvedValue({ id: FUND_ID })
+    mockPrisma.fund.findUnique.mockResolvedValue({ id: FUND_ID, status: 'Fundraising' })
     const err = Object.assign(new Error('FK violation'), { code: 'P2003' })
     mockPrisma.investment.create.mockRejectedValue(err)
 
