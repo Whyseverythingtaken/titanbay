@@ -99,3 +99,15 @@ I used Claude Code (claude-sonnet-4-6) throughout this project:
 - **Problem-solving**: When pnpm's build script approval blocked Prisma's postinstall scripts, Claude identified that `prisma generate` could run independently and adjusted the workflow accordingly.
 - **Validation**: Claude ran TypeScript type checking and all unit tests to confirm correctness before completing the implementation.
 
+## Design Decisions
+
+- Fastify, vitest, postgres were used as I am with these libraries.
+- This was my first time using Prisma as an ORM. I have experience using Knex.js but Prisma is popular these days and I wanted to try it.
+
+## Additional business logic
+
+- I decided to add additional business logic that a new investment is can only be added when a Fund's status = fundraising.
+
+## Deployment to Railway
+
+- My initial plan was to deploy this service to a live endpoint (Railway). But after 20 minutes I wasn't able to finish this so I have left this for now. This app can be tested locally as per instructions above
