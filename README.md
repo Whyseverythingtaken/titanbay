@@ -64,6 +64,7 @@ Base URL: `http://localhost:3000`
 | `400` | Validation error or bad request (missing fields, invalid format, FK violation) |
 | `404` | Resource not found |
 | `409` | Conflict (duplicate email) |
+| `422` | Unprocessable content (i.e. New Investment not possible when fund != fundraising) |
 | `500` | Internal server error |
 
 ## Running Tests
